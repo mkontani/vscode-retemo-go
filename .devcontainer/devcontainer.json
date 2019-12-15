@@ -1,31 +1,32 @@
 {
 	"name": "Go",
 	"dockerFile": "Dockerfile",
-
 	// Specifies a list of ports the container should publish
-	"appPort": [9000],
-
+	"appPort": [
+		9000
+	],
 	"runArgs": [
 		// Uncomment the next line to run as root instead. Linux users, 
 		// update Dockerfile with your user's UID/GID if not 1000 when
 		// using the default "vscode" user.
 		// "-u", "root",
-
-		"--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		"-v",
+		"${env:HOME}${env:USERPROFILE}/.ssh:/root/.ssh-localhost:ro"
 	],
-
 	// Use 'settings' to set *default* container specific settings.json values on container create. 
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
-	"settings": { 
+	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"go.gopath": "/go",
 		"go.inferGopath": true,
 		"go.useLanguageServer": true
 	},
-
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "go version",
-
+	"postCreateCommand": "sudo cp -r /root/.ssh-localhost ~ && sudo chown -R $(id -u):$(id -g) ~/.ssh-localhost && mv ~/.ssh-localhost ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
 	"extensions": [
 		"ms-vscode.go"
 	]
